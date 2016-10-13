@@ -150,7 +150,22 @@
         <span style="font-weight: bold;padding-right:.5em;color:<%- styles[message.author._id] %>"><%- moment(message.time).format('HH:mm') %> <%- message.author.lastname || i18n.t('user.unknown') %> <%- message.author.firstname ? message.author.firstname.charAt(0) + '.' : '' %><%- message.author.middlename ? message.author.middlename.charAt(0) + '.' : '' %>:</span><span><%= message.text %>
         <% if(message.attach.length > 0) { %>
             <% _.each(message.attach, function(element, index, list){ %>
-                <i class="fa fa-paperclip"></i>&nbsp;<a class="attach-link" href="storage/<%- element.fileId %>"><%- element.filename %></a>
+                <i class="fa fa-paperclip"></i>&nbsp;<a class="attach-link" href="storage/chat/<%- message.exam %>/<%- element.fileId %>"><%- element.filename %></a>
+            <% }); %>
+        <% } %>
+    </div>
+<% }); %>
+</script>
+<script type="text/template" id="notes-tpl">
+<% var colors = ['red', 'blue', 'green', 'orange', 'purple', 'cyan', 'pink']; %>
+<% var styles = {}; %>
+<% _.each(notes, function(note, index, list){ %>
+    <% if(!styles[note.author._id]) styles[note.author._id] = colors[Object.keys(styles).length]; %>
+    <div style="padding-bottom:2px">
+        <span style="font-weight: bold;padding-right:.5em;color:<%- styles[note.author._id] %>"><%- moment(note.time).format('HH:mm') %> <%- note.author.lastname || i18n.t('user.unknown') %> <%- note.author.firstname ? note.author.firstname.charAt(0) + '.' : '' %><%- note.author.middlename ? note.author.middlename.charAt(0) + '.' : '' %>:</span><span><%= note.text %>
+        <% if(note.attach.length > 0) { %>
+            <% _.each(note.attach, function(element, index, list){ %>
+                <i class="fa fa-paperclip"></i>&nbsp;<a class="attach-link" href="storage/note/<%- note.exam %>/<%- element.fileId %>"><%- element.filename %></a>
             <% }); %>
         <% } %>
     </div>

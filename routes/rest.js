@@ -23,12 +23,24 @@ function error(err) {
  */
 router.checkPermissions = function(req, res, next) {
     var token = config.get('rest:' + req.headers['x-access-token']);
-    if (!token) return res.status(401).end();
+    if (!token) {
+        var err = new Error('Unauthorized');
+            err.status = 401;
+        return next(err);
+    }
     var params = token[req.params.collection];
-    if (!params) return res.status(403).end();
+    if (!params) {
+        var err = new Error('Forbidden');
+            err.status = 403;
+        return next(err);
+    }
     switch (req.method) {
         case 'GET':
-            if (!params.read) return res.status(403).end();
+            if (!params.read) {
+                var err = new Error('Forbidden');
+                    err.status = 403;
+                return next(err);
+            }
             if (typeof params.read.query !== 'undefined') res.locals.query = params.read.query;
             if (typeof params.read.skip !== 'undefined') res.locals.skip = params.read.skip;
             if (typeof params.read.limit !== 'undefined') res.locals.limit = params.read.limit;
@@ -37,16 +49,30 @@ router.checkPermissions = function(req, res, next) {
             if (typeof params.read.populate !== 'undefined') res.locals.populate = params.read.populate;
             break;
         case 'POST':
-            if (!params.create) return res.status(403).end();
+            if (!params.create) {
+                var err = new Error('Forbidden');
+                    err.status = 403;
+                return next(err);
+            }
             break;
         case 'PUT':
-            if (!params.update) return res.status(403).end();
+            if (!params.update) {
+                var err = new Error('Forbidden');
+                    err.status = 403;
+                return next(err);
+            }
             break;
         case 'DELETE':
-            if (!params.delete) return res.status(403).end();
+            if (!params.delete) {
+                var err = new Error('Forbidden');
+                    err.status = 403;
+                return next(err);
+            }
             break;
         default:
-            return res.status(403).end();
+            var err = new Error('Forbidden');
+                err.status = 403;
+            return next(err);
     }
     next();
 };

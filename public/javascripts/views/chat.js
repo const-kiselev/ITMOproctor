@@ -34,6 +34,7 @@ define([
                 },
                 render: function() {
                     //console.log('render');
+                    console.log(this.model.toJSON());
                     this.$el.html(this.tpl({
                         i18n: i18n,
                         message: this.model.toJSON()

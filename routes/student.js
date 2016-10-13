@@ -52,7 +52,9 @@ router.get('/exam/:examId', members.updateMember, function(req, res, next) {
             req.notify('exam', data);
         }
         else {
-            res.status(400).end();
+            var err = new Error('Bad Request');
+                err.status = 400;
+            return next(err);
         }
     });
 });

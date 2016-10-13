@@ -197,7 +197,11 @@ router.examStatus = function(req, res, next) {
         var student = exam.student || {};
         switch (student.provider) {
             case 'openedu':
-                if (!exam.examCode) return res.status(400).end();
+                if (!exam.examCode) {
+                    var error = new Error('Bad Request');
+                        error.status = 400;
+                    return next(error);
+                }
                 var url = config.get('api:openedu:examStatus').replace('{examCode}', exam.examCode);
                 var apiKey = config.get('api:openedu:apiKey');
                 var request = require('request');

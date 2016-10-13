@@ -19,7 +19,8 @@ var db = {
             local: function(username, password, done) {
                 var User = require('./models/user');
                 User.findOne({
-                    username: username
+                    username: username,
+                    provider: 'local'
                 }).select("+hashedPassword +salt").exec(function(err, user) {
                     if (err) {
                         return done(err);
@@ -225,20 +226,122 @@ var db = {
                 });
             });
         },
-        download: function(fileId, callback) {
-            db.gfs.findOne({
-                _id: fileId
-            }, function(err, data) {
-                if (!err && data) {
-                    var readstream = db.gfs.createReadStream({
-                        _id: fileId
+        download: {
+            user: function(args,callback) {
+                db.gfs.findOne({
+                    _id: args.fileId
+                }, function(err, data) {
+                    if (!err && data) {
+                        var readstream = db.gfs.createReadStream({
+                            _id: args.fileId
+                        });
+                        readstream.pipe(callback(data));
+                    }
+                    else callback();
+                });              
+            },
+            chat: function(args,callback) {
+                var User = require('./models/user');
+                var Exam = require('./models/exam');
+                var Member = require('./models/member');
+                Exam.findById(args.examId).select({
+                    student: 1,
+                    inspector: 1                
+                }).exec(function(err,data){
+                    if (err) callback();
+                    var allowed = [];
+                    if (data.student) allowed.push(data.student.toString()); 
+                    if (data.inspector) allowed.push(data.inspector.toString());
+                    Member.find({
+                        examId: args.examId
+                    }).exec(function(err,data){
+                        if (err) callback();
+                        data.forEach(function(e,i,a){ allowed.push(e._id.toString()); });
+                        User.find({
+                            role: 3 // admins
+                        }).select('_id').exec(function(err,data){
+                            if (err) callback();
+                            data.forEach(function(e,i,a){ allowed.push(e._id.toString()); });
+                            if (allowed.indexOf(args.sessionUserId) >= 0) {
+                                db.gfs.findOne({
+                                    _id: args.fileId
+                                }, function(err, data) {
+                                    if (!err && data) {
+                                        var readstream = db.gfs.createReadStream({
+                                            _id: args.fileId
+                                        });
+                                        readstream.pipe(callback(data));
+                                    }
+                                    else callback();
+                                });
+                            }
+                            else callback();
+                        });
                     });
-                    readstream.pipe(callback(data));
-                }
-                else {
-                    callback();
-                }
-            });
+                });
+            },
+            note: function(args,callback) {
+                var User = require('./models/user');
+                var Exam = require('./models/exam');
+                var Member = require('./models/member');
+                Exam.findById(args.examId).select({
+                    inspector: 1                
+                }).exec(function(err,data){
+                    if (err) callback();
+                    var allowed = [];
+                    if (data.inspector) allowed.push(data.inspector.toString());
+                    Member.find({
+                        examId: args.examId
+                    }).exec(function(err,data){
+                        if (err) callback();
+                        data.forEach(function(e,i,a){ allowed.push(e._id.toString()); });
+                        User.find({
+                            role: 3 // admins
+                        }).select('_id').exec(function(err,data){
+                            if (err) callback();
+                            data.forEach(function(e,i,a){ allowed.push(e._id.toString()); });
+                            if (allowed.indexOf(args.sessionUserId) >= 0) {
+                                db.gfs.findOne({
+                                    _id: args.fileId
+                                }, function(err, data) {
+                                    if (!err && data) {
+                                        var readstream = db.gfs.createReadStream({
+                                            _id: args.fileId
+                                        });
+                                        readstream.pipe(callback(data));
+                                    }
+                                    else callback();
+                                });
+                            }
+                            else callback();
+                        });
+                    });
+                });
+            },
+            verify: function(args,callback) {
+                var User = require('./models/user');
+                var allowed = [];
+                User.find({
+                    role: 3 // admins
+                }).select('_id').exec(function(err,data){
+                    if (err) callback();
+                    data.forEach(function(e,i,a){ allowed.push(e._id.toString()); });
+                    if (allowed.indexOf(args.sessionUserId) >= 0) {
+                        db.gfs.findOne({
+                            _id: args.fileId
+                        }, function(err, data) {
+                            if (!err && data) {
+                                var readstream = db.gfs.createReadStream({
+                                    _id: args.fileId
+                                });
+                                readstream.pipe(callback(data));
+                            }
+                            else callback();
+                        });
+                    }
+                    else callback();
+                });
+            },
         },
         remove: function(files, callback) {
             if (!files) return;

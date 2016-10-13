@@ -46,7 +46,7 @@
 <span style="font-weight: bold;padding-right:.5em;color:<%- color %>"><%- moment(message.time).format('HH:mm') %> <%- message.author.lastname || i18n.t('user.unknown') %> <%- message.author.firstname ? message.author.firstname.charAt(0) + '.' : '' %><%- message.author.middlename ? message.author.middlename.charAt(0) + '.' : '' %>:</span><span><%= message.text %>
     <% if(message.attach.length > 0) { %>
         <% _.each(message.attach, function(element, index, list){ %>
-            <i class="fa fa-paperclip"></i>&nbsp;<a class="attach-link" href="storage/<%- element.fileId %>"><%- element.filename %></a>
+            <i class="fa fa-paperclip"></i>&nbsp;<a class="attach-link" href="storage/chat/<%- message.exam %>/<%- element.fileId %>"><%- element.filename %></a>
         <% }); %>
     <% } %>
 </span>
