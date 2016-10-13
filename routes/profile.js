@@ -10,10 +10,16 @@ var db = require('../db');
 function checkRole(req, res, next, role) {
     if (req.isAuthenticated()) {
         if (!role || req.user.role >= role) next();
-        else res.status(403).end();
+        else {
+            var error = new Error('Unauthorized');
+                error.status = 401;
+            return next(error);
+        }
     }
     else {
-        res.status(401).end();
+        var error = new Error('Unauthorized');
+            error.status = 401;
+        return next(error);
     }
 }
 
@@ -31,15 +37,27 @@ router.isAdministrator = function(req, res, next) {
 };
 router.isMyself = function(req, res, next) {
     if (req.params.userId === req.user._id) next();
-    else res.status(403).end();
+    else {
+        var error = new Error('Forbidden');
+            error.status = 403;
+        return next(error);
+    }
 };
 router.isInspectorOrMyself = function(req, res, next) {
     if (req.user.role > 1 || req.params.userId === req.user._id) next();
-    else res.status(403).end();
+    else {
+        var error = new Error('Forbidden');
+            error.status = 403;
+        return next(error);
+    }
 };
 router.isAdministratorOrMyself = function(req, res, next) {
     if (req.user.role > 2 || req.params.userId === req.user._id) next();
-    else res.status(403).end();
+    else {
+        var error = new Error('Forbidden');
+            error.status = 403;
+        return next(error);
+    }
 };
 router.logUserIP = function(req, res, next) {
     if (req.isAuthenticated()) {

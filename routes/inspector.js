@@ -40,7 +40,11 @@ router.get('/exam/:examId',
                     userId: args.userId
                 });
             }
-            else res.status(400).end();
+            else {
+                var error = new Error('Bad Request');
+                    error.status = 400;
+                return next(error);
+            }
         });
     });
 // Stop exam
@@ -60,7 +64,11 @@ router.put('/exam/:examId',
                 });
                 res.json(data);
             }
-            else res.status(400).end();
+            else {
+                var error = new Error('Bad Request');
+                    error.status = 400;
+                return next(error);
+            }
         });
     },
     api.stopExam);

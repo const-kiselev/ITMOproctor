@@ -106,10 +106,10 @@ define([
             });
             this.notes.fetch({
                 success: function(collection) {
-                    var tpl = _.template(self.templates['messages-tpl']);
+                    var tpl = _.template(self.templates['notes-tpl']);
                     var data = {
                         i18n: i18n,
-                        messages: collection.toJSON()
+                        notes: collection.toJSON()
                     };
                     self.$Notes.html(tpl(data));
                 }

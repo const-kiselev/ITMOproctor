@@ -52,10 +52,10 @@ define([
                             attach.forEach(function(item, i, arr){
                                 switch (item.filename) {
                                     case 'photo.png':
-                                        self.$Photo.attr('src', 'storage/' + item.fileId);
+                                        self.$Photo.attr('src', 'storage/verify/' + model.toJSON().exam + '/' + item.fileId);
                                         break;
                                     case 'document.png':
-                                        self.$Document.attr('src', 'storage/' + item.fileId);
+                                        self.$Document.attr('src', 'storage/verify/' + model.toJSON().exam + '/' + item.fileId);
                                         break;
                                 }
                             });

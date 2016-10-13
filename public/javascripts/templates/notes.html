@@ -32,7 +32,7 @@
             <span style="white-space:pre-wrap;"><%= note.text %></span>        
             <% if(note.attach.length > 0) { %>
                 <% _.each(note.attach, function(element, index, list){ %>
-                    <i class="fa fa-paperclip"></i>&nbsp;<a class="attach-link" href="storage/<%- element.fileId %>"><%- element.filename %></a>
+                    <i class="fa fa-paperclip"></i>&nbsp;<a class="attach-link" href="storage/note/<%- note.exam %>/<%- element.fileId %>"><%- element.filename %></a>
                 <% }); %>
             <% } %>
     </div>

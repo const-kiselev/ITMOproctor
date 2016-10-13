@@ -75,7 +75,7 @@ define([
                     self.$From.form('load', app.profile.toJSON());
                     // Load image
                     self.attach.reset(app.profile.get('attach'));
-                    if (self.attach.at(0)) self.$Avatar.attr('src', 'storage/' + self.attach.at(0).get('fileId'));
+                    if (self.attach.at(0)) self.$Avatar.attr('src', 'storage/user/' + app.profile.id + '/' + self.attach.at(0).get('fileId'));
                 },
                 onClose: function() {
                     self.$From.form('clear');

@@ -8,7 +8,7 @@
 }
 </style>
 <div style="padding:15px">
-    <% var photo = user.attach && user.attach.length > 0 ? 'storage/' + user.attach[0].fileId : 'images/avatar.png'; %>
+    <% var photo = user.attach && user.attach.length > 0 ? 'storage/user/' +user._id + '/' + user.attach[0].fileId : 'images/avatar.png'; %>
     <img src="<%- photo %>" alt="<%- i18n.t('user.photo') %>" style="border:1px solid lightgray;width:120px;height:160px;object-position:center;object-fit:cover;float:left;margin-right:10px;">
     <table class="profile-table" cellpadding="5" style="float:clear">
     <tr>
