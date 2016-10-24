@@ -167,7 +167,8 @@ define({
             "foreignDocument": "Иностранный документ",
             "seamanPassport": "Паспорт моряка",
             "birthCertificate": "Свидетельство о рождении",
-            "militaryID": "Военный билет"
+            "militaryID": "Военный билет",
+            "temporaryAsylum": "Свидетельство о предоставлении временного убежища на территории РФ"
         },
         "documentNumber": "Серия и номер",
         "documentNumberPrompt": "Серия и номер документа",
