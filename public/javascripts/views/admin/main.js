@@ -4,8 +4,10 @@
 define([
     "i18n",
     "text!templates/admin/main.html",
-    "views/profile/editor"
-], function(i18n, template, ProfileEditor) {
+    "views/profile/editor",
+    "views/settings",
+    "views/demo"
+], function(i18n, template, ProfileEditor, SettingsView, DemoView) {
     console.log('views/admin/main.js');
     var View = Backbone.View.extend({
         bindings: {
@@ -27,7 +29,9 @@ define([
             this.templates = _.parseTemplate(template);
             // Sub views
             this.view = {
-                profile: new ProfileEditor()
+                profile: new ProfileEditor(),                
+                settings: new SettingsView(),
+                demo: new DemoView(),
             };
         },
         destroy: function() {
@@ -100,6 +104,12 @@ define([
                     switch (item.name) {
                         case "profile":
                             self.view.profile.doOpen();
+                            break;
+                        case "demo":
+                            self.view.demo.doOpen();
+                            break;
+                        case "settings":
+                            self.view.settings.doOpen();
                             break;
                         case "logout":
                             app.logout();
