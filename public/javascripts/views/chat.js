@@ -33,11 +33,10 @@ define([
                     this.listenTo(this.model, 'destroy', this.remove);
                 },
                 render: function() {
-                    //console.log('render');
-                    console.log(this.model.toJSON());
+                    var message = this.model.toJSON();
                     this.$el.html(this.tpl({
                         i18n: i18n,
-                        message: this.model.toJSON()
+                        message: message
                     }));
                     return this;
                 }
@@ -151,6 +150,10 @@ define([
         },
         doSend: function() {
             var text = this.$Input.text();
+            text = text.replace(/&/g, "&amp;")
+                       .replace(/</g, "&lt;")
+                       .replace(/>/g, "&gt;")
+                       .replace(/\//g, "&frasl;");
             if (text || this.attach.length > 0) {
                 this.createMessage(text);
             }

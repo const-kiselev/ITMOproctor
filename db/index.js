@@ -467,10 +467,9 @@ var db = {
             var Exam = require('./models/exam');
             Exam.count(query, function(err, count) {
                 if (err || !count) return callback(err);
-                Exam.find(query).sort('leftDate beginDate subject').skip(rows * page)
-                    .limit(rows).populate(opts).exec(function(err, data) {
-                        callback(err, data, count);
-                    });
+                Exam.find(query).sort('leftDate beginDate subject').populate(opts).exec(function(err, data) {
+                    callback(err, data, count);
+                });
             });
         },
         get: function(args, callback) {
