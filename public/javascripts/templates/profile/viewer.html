@@ -17,11 +17,15 @@
     </tr>
     <tr>
         <td><strong><%- i18n.t('user.gender') %>:</strong></td>
-        <td><%- user.gender %></td>
+        <td><%- i18n.t('user.genders.' + user.gender) %></td>
     </tr>
     <tr>
         <td><strong><%- i18n.t('user.birthday') %>:</strong></td>
-        <td><%- user.birthday %></td>
+        <td>
+            <% if (user.birthday) {  %>
+                <%- moment(user.birthday).format('DD.MM.YYYY') %>
+            <% } %>
+        </td>
     </tr>
     <tr>
         <td><strong><%- i18n.t('user.email') %>:</strong></td>

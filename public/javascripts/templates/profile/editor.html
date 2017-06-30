@@ -26,10 +26,7 @@
             <tr>
                 <td><%- i18n.t('user.gender') %>:</td>
                 <td>
-                    <select name="gender" class="easyui-combobox gender" data-options="width:200,panelHeight:'auto',editable:false,prompt:'<%- i18n.t('user.genderPrompt') %>'">
-                        <option value="<%- i18n.t('user.genders.male') %>"><%- i18n.t('user.genders.male') %></option>
-                        <option value="<%- i18n.t('user.genders.female') %>"><%- i18n.t('user.genders.female') %></option>
-                    </select>
+                    <input name="gender" class="easyui-combobox gender" data-options="required:true,valueField:'code',textField:'value',tipPosition:'bottom',width:200,panelHeight:'auto',editable:false,prompt:'<%- i18n.t('user.genderPrompt') %>'"/>
                 </td>
             </tr>
             <tr>

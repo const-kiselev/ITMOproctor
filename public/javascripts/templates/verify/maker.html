@@ -15,19 +15,35 @@
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('verify.gender') %>:</td>
-        <td style="font-weight:bold"><%- user.gender %></td>
+        <td style="font-weight:bold"><%- i18n.t('user.genders.' + user.gender) %></td>
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('verify.birthday') %>:</td>
-        <td style="font-weight:bold"><%- user.birthday %></td>
+        <td style="font-weight:bold">
+            <% if (user.birthday) {  %>
+                <%- moment(user.birthday).format('DD.MM.YYYY') %>
+            <% } %>  
+        </td>
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('verify.citizenship') %>:</td>
-        <td style="font-weight:bold"><%- user.citizenship %></td>
+        <td style="font-weight:bold">
+            <% if (i18n.t('countries.' + user.citizenship) != ('countries.' + user.citizenship)) {  %>
+                <%- i18n.t('countries.' + user.citizenship) %>
+            <% } else {%>
+                <%- user.citizenship %>
+            <% } %>
+        </td>
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('verify.documentType') %>:</td>
-        <td style="font-weight:bold"><%- user.documentType %></td>
+        <td style="font-weight:bold">
+            <% if (i18n.t('user.documentTypes.' + user.documentType) != ('user.documentTypes.' + user.documentType)) {  %>
+                <%- i18n.t('user.documentTypes.' + user.documentType) %>
+            <% } else {%>
+                <%- user.documentType %>
+            <% } %>
+        </td>
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('verify.documentNumber') %>:</td>
@@ -35,7 +51,11 @@
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('verify.documentIssueDate') %>:</td>
-        <td style="font-weight:bold"><%- user.documentIssueDate %></td>
+        <td style="font-weight:bold">
+            <% if (user.documentIssueDate) {  %>
+                <%- moment(user.documentIssueDate).format('DD.MM.YYYY') %>
+            <% } %>
+        </td>
     </tr>
 </table>
 </script>
