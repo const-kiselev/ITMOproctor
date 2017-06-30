@@ -90,19 +90,29 @@
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('vision.verify.gender') %>:</td>
-        <td style="font-weight:bold"><%- user.gender %></td>
+        <td style="font-weight:bold"><%- i18n.t('user.genders.' + user.gender) %></td>
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('vision.verify.birthday') %>:</td>
-        <td style="font-weight:bold"><%- user.birthday %></td>
+        <td style="font-weight:bold">
+            <% if (user.birthday) {  %>
+                <%- moment(user.birthday).format('DD.MM.YYYY') %>
+            <% } %>
+        </td>
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('vision.verify.citizenship') %>:</td>
-        <td style="font-weight:bold"><%- user.citizenship %></td>
+        <td style="font-weight:bold">
+            <% if (i18n.t('countries.' + user.citizenship) != ('countries.' + user.citizenship)) {  %>
+                <%- i18n.t('countries.' + user.citizenship) %>
+            <% } else {%>
+                <%- user.citizenship %>
+            <% } %>
+        </td>
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('vision.verify.documentType') %>:</td>
-        <td style="font-weight:bold"><%- user.documentType %></td>
+        <td style="font-weight:bold"><%- i18n.t('user.documentTypes.' + user.documentType) %></td>
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('vision.verify.documentNumber') %>:</td>
@@ -110,7 +120,11 @@
     </tr>
     <tr>
         <td style="padding-right:4px"><%- i18n.t('vision.verify.documentIssueDate') %>:</td>
-        <td style="font-weight:bold"><%- user.documentIssueDate %></td>
+        <td style="font-weight:bold">
+            <% if (user.documentIssueDate) {  %>
+                <%- moment(user.documentIssueDate).format('DD.MM.YYYY') %>
+            <% } %>
+        </td>
     </tr>
 </table>
 </script>

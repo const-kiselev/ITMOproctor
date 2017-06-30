@@ -42,21 +42,50 @@ define([
                 }],
                 onOpen: function() {
                     $(this).dialog('center');
-                    self.$From.form('load', app.profile.toJSON());
+                    self.$Form.form('load', app.profile.toJSON());
                 },
                 onClose: function() {
-                    self.$From.form('clear');
+                    self.$Form.form('clear');
                 }
             });
             this.$Dialog = $(dialog);
-            this.$From = this.$('.passport-form');
+            this.$Form = this.$('.passport-form');            
+            this.$Citizenship = this.$Form.find('.citizenship');
+            this.$Gender = this.$Form.find('.gender');
+            this.$DocumentType = this.$Form.find('.documentType');
+            this.setTemplateData();
             return this;
         },
+        setTemplateData: function() {
+            var self = this;
+            var setData = function (keys,pattern,container) {
+                if (keys) {
+                    var data = [];
+                    keys.forEach(function(elem){
+                        var code = elem.replace(pattern,'');
+                        data.push({
+                            code: code,
+                            value: i18n.phrases[elem]
+                        });
+                    });
+                    container.combobox('loadData',data);
+                }
+            };
+            // set countries
+            var countriesKeys = Object.keys(i18n.phrases).filter(function(obj){ return obj.indexOf('countries') >= 0; });
+            setData(countriesKeys,'countries.',self.$Citizenship);
+            // set gender
+            var genderKeys = Object.keys(i18n.phrases).filter(function(obj){ return obj.indexOf('user.genders') >= 0; });
+            setData(genderKeys,'user.genders.',self.$Gender);
+            // set document types
+            var docTypeKeys = Object.keys(i18n.phrases).filter(function(obj){ return obj.indexOf('user.documentTypes') >= 0; });
+            setData(docTypeKeys,'user.documentTypes.',self.$DocumentType);
+        },
         doSave: function() {
-            if (!this.$From.form('validate')) return;
+            if (!this.$Form.form('validate')) return;
             var self = this;
             var config = {};
-            this.$From.serializeArray().map(function(item) {
+            this.$Form.serializeArray().map(function(item) {                
                 if (config[item.name]) {
                     if (typeof(config[item.name]) === "string") {
                         config[item.name] = [config[item.name]];

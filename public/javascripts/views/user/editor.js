@@ -60,8 +60,35 @@ define([
             this.$Dialog = $(dialog);
             this.$Tabs = this.$('.easyui-tabs');
             this.$Form = this.$('.user-form');
+            this.$Gender = this.$Form.find('.gender');
             this.$Password = this.$Form.find('.password');
+            this.$Citizenship = this.$Form.find('.citizenship');
+            this.$DocumentType = this.$Form.find('.documentType');
+            this.setTemplateData();
             return this;
+        },
+        setTemplateData: function() {
+            var self = this;
+            var setData = function (pattern,container) {
+                var keys = Object.keys(i18n.phrases).filter(function(obj){ return obj.indexOf(pattern) >= 0; });
+                if (keys) {
+                    var data = [];
+                    keys.forEach(function(elem){
+                        var code = elem.replace(pattern,'');
+                        data.push({
+                            code: code,
+                            value: i18n.phrases[elem]
+                        });
+                    });
+                    container.combobox('loadData',data);
+                }
+            };
+            // set countries
+            setData('countries.',self.$Citizenship);
+            // set gender
+            setData('user.genders.',self.$Gender);
+            // set document types
+            setData('user.documentTypes.',self.$DocumentType);
         },
         doSave: function() {
             if (!this.$Form.form('validate')) return;

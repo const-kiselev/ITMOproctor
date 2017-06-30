@@ -57,7 +57,9 @@ router.fetchExams = function(req, res, next) {
                         return next();
                     }
                     //console.log(json);
-                    var data = {};
+		    //logger.warn(json);
+		    logger.warn(body);
+		    var data = {};
                     try {
                         var path = require('path');
                         data = require(path.join('..', config.get('api:openedu:data')));
@@ -68,7 +70,7 @@ router.fetchExams = function(req, res, next) {
                     }
                     var coursePattern = config.get('api:openedu:coursePattern');
                     var arr = [];
-                    for (var k in json) {
+                    for (var k in json) {                    	
                         if (!k.match(coursePattern)) continue;
                         var exams = json[k].exams || [];
                         for (var i = 0, li = exams.length; i < li; i++) {
@@ -76,8 +78,8 @@ router.fetchExams = function(req, res, next) {
                                 var tpl = data[exams[i].content_id] || {};
                                 arr.push({
                                     examId: exams[i].course_id + '#' + exams[i].id,
-                                    leftDate: tpl.leftDate || json[k].start,
-                                    rightDate: tpl.rightDate || json[k].end,
+                                    leftDate: tpl.leftDate || exams[i].start,
+                                    rightDate: tpl.rightDate || exams[i].deadline,
                                     subject: tpl.subject || json[k].name + ' (' + exams[i].exam_name + ')',
                                     duration: tpl.duration || exams[i].time_limit_mins
                                 });
@@ -101,6 +103,7 @@ router.fetchExams = function(req, res, next) {
             break;
         default:
             next();
+            
     }
 };
 /**

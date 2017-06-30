@@ -1,11 +1,14 @@
 <script type="text/template" id="main-tpl">
 <style type="text/css">
-.login-view {
+.login-container{
     width: 300px;
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -70%);
+}
+.login-view {
+    width: 300px;
 }
 .login-from-line {
     width: 100%;
@@ -24,29 +27,47 @@
 .itmo-logo {
     content: url("data:image/png;base64,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");
 }
+.country-flag {
+    width: 15px;
+    height: 15px;
+    border: 1px solid #d5d5d5;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+}
 </style>
-<div class="login-view">
-    <div class="easyui-panel" data-options="fit:true" title="<%- i18n.t('login.title') %>" style="padding:20px 40px 20px 40px;">
-        <form id="auth-plain">
-            <div style="margin-bottom:10px">
-                <input class="easyui-textbox username" type="text" name="username" style="width:100%;height:24px;padding:4px" data-options="prompt:'<%- i18n.t('login.username') %>'">
-            </div>
-            <div style="margin-bottom:15px">
-                <input class="easyui-textbox password" type="password" name="password" style="width:100%;height:24px;padding:4px" data-options="prompt:'<%- i18n.t('login.password') %>'">
-            </div>
-            <div style="text-align: right;margin-bottom:25px">
-                <input class="easyui-linkbutton" style="height:24px;width:100%;" type="submit" value="<%- i18n.t('login.submit') %>">
-            </div>
-            <div class="login-from-line">
-                <span class="login-from-text">
-                    <%- i18n.t('login.from') %>
-                </span>
-            </div>
-            <div style="margin-top:20px;text-align:center">
-                <a class="easyui-linkbutton openedu-btn" href="/profile/openedu" style="height:42px;width:100px;" data-options="plain:true"><span class="openedu-logo" style="padding-top: 10px"></span></a>
-                <a class="easyui-linkbutton ifmosso-btn" href="javascript:authIfmoSSO();" style="height:42px;width:100px;" data-options="plain:true"><span class="itmo-logo" style="padding-top: 6px"></span></a>
-            </div>
-        </form>
+<div class="login-container">
+    <div class="login-view">
+        <div class="easyui-panel" data-options="fit:true,footer:'#footer'" title="<%- i18n.t('login.title') %>" style="padding:20px 40px 20px 40px;">   
+            <form id="auth-plain">
+                <div style="margin-bottom:10px">
+                    <input class="easyui-textbox username" type="text" name="username" style="width:100%;height:24px;padding:4px" data-options="prompt:'<%- i18n.t('login.username') %>'">
+                </div>
+                <div style="margin-bottom:15px">
+                    <input class="easyui-textbox password" type="password" name="password" style="width:100%;height:24px;padding:4px" data-options="prompt:'<%- i18n.t('login.password') %>'">
+                </div>
+                <div style="text-align: right;margin-bottom:25px">
+                    <input class="easyui-linkbutton" style="height:30px;width:100%;" type="submit" name="submit" value="<%- i18n.t('login.submit') %>"/>
+                </div>
+                <div class="login-from-line">
+                    <span class="login-from-text">
+                        <%- i18n.t('login.from') %>
+                    </span>
+                </div>
+                <div style="margin-top:20px;text-align:center">
+                    <a class="easyui-linkbutton openedu-btn" href="/profile/openedu" style="height:42px;width:100px;" data-options="plain:true"><span class="openedu-logo" style="padding-top: 10px"></span></a>
+                    <a class="easyui-linkbutton ifmosso-btn" href="javascript:authIfmoSSO();" style="height:42px;width:100px;" data-options="plain:true"><span class="itmo-logo" style="padding-top: 6px"></span></a>
+                </div>                
+            </form>
+        </div>
+        <div id="footer" style="padding:5px;">
+            <a class="easyui-linkbutton lang-item" data-options="plain:true">
+                <img class="country-flag ru" src="/images/flag-rus.png" align="absmiddle"/> Рус
+            </a>
+            <a class="easyui-linkbutton lang-item" data-options="plain:true">
+                <img class="country-flag en" src="/images/flag-uk.png" align="absmiddle"/> Eng
+            </a>
+        </div>
     </div>
 </div>
 <form name="auth-ifmosso" action="https://de.ifmo.ru/IfmoSSO/" method="post" style="display:none">

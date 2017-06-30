@@ -72,21 +72,23 @@ define([
                 onOpen: function() {
                     $(this).dialog('center');
                     // Load form data
-                    self.$From.form('load', app.profile.toJSON());
+                    self.$Form.form('load', app.profile.toJSON());
                     // Load image
                     self.attach.reset(app.profile.get('attach'));
                     if (self.attach.at(0)) self.$Avatar.attr('src', 'storage/user/' + app.profile.id + '/' + self.attach.at(0).get('fileId'));
                 },
                 onClose: function() {
-                    self.$From.form('clear');
+                    self.$Form.form('clear');
                     self.$Progress.hide();
                     self.$Avatar.attr('src', 'images/avatar.png');
                 }
             });
             this.$Dialog = $(dialog);
-            this.$From = this.$('.profile-form');
+            this.$Form = this.$('.profile-form');
+            this.$Gender = this.$Form.find('.gender');
             this.$Avatar = this.$('.avatar');
             this.$Progress = this.$('.attach-progress');
+            this.setTemplateData();
             return this;
         },
         removeAttach: function() {
@@ -94,12 +96,31 @@ define([
                 this.attach.at(i).set('removed', true);
             }
         },
+        setTemplateData: function() {
+            var self = this;
+            var setData = function (pattern,container) {
+                var keys = Object.keys(i18n.phrases).filter(function(obj){ return obj.indexOf(pattern) >= 0; });
+                if (keys) {
+                    var data = [];
+                    keys.forEach(function(elem){
+                        var code = elem.replace(pattern,'');
+                        data.push({
+                            code: code,
+                            value: i18n.phrases[elem]
+                        });
+                    });
+                    container.combobox('loadData',data);
+                }
+            };
+            // set gender
+            setData('user.genders.',self.$Gender);
+        },
         doSave: function() {
             var self = this;
             var config = {
                 attach: this.attach.toJSON()
             };
-            this.$From.serializeArray().map(function(item) {
+            this.$Form.serializeArray().map(function(item) {
                 if (config[item.name]) {
                     if (typeof(config[item.name]) === "string") {
                         config[item.name] = [config[item.name]];
