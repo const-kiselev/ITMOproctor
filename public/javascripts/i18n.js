@@ -10,6 +10,6 @@ define([
         phrases: locale
     });
     _.extend($, easyui);
-    moment.locale(LANG);
+    moment.locale('ru');
     return polyglot;
 });

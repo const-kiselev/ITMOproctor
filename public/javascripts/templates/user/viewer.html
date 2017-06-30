@@ -30,15 +30,15 @@
     </tr>
     <tr>
         <td><strong><%- i18n.t('user.gender') %>:</strong></td>
-        <td><%- i18n.t('user.genders.' + user.gender) %></td>
+        <td>
+            <% if (user.gender) {  %>
+                <%- i18n.t('user.genders.' + user.gender) %>
+            <% } %>
+        </td>
     </tr>
     <tr>
         <td><strong><%- i18n.t('user.birthday') %>:</strong></td>
-        <td>
-            <% if (user.birthday) {  %>
-                <%- moment(user.birthday).format('DD.MM.YYYY') %>
-            <% } %>            
-        </td>
+        <td><%- user.birthday %></td>
     </tr>
     <tr>
         <td><strong><%- i18n.t('user.email') %>:</strong></td>
@@ -70,11 +70,7 @@
     </tr>
     <tr>
         <td><strong><%- i18n.t('user.documentIssueDate') %>:</strong></td>
-        <td>
-            <% if (user.documentIssueDate) {  %>
-                <%- moment(user.documentIssueDate).format('DD.MM.YYYY') %>
-            <% } %>
-        </td>
+        <td><%- user.documentIssueDate %></td>
     </tr>
     <tr>
         <td><strong><%- i18n.t('user.address') %>:</strong></td>
