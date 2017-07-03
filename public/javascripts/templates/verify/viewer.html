@@ -16,9 +16,11 @@
     <tr>
         <td style="padding-right:4px"><%- i18n.t('verify.gender') %>:</td>
         <td style="font-weight:bold">
-            <% if (user.gender) {  %>
+            <% if (user.gender && i18n.t('user.genders.' + user.gender) != ('user.genders.' + user.gender)) {  %>
                 <%- i18n.t('user.genders.' + user.gender) %>
-            <% } %>  
+            <% } else if (user.gender) {%>
+                <%- user.gender %>
+            <% } %> 
         </td>
     </tr>
     <tr>
