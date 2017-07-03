@@ -117,7 +117,8 @@ define({
         "dates": "Terms",
         "from": "from",
         "to": "to",
-        "duration": "Duration"
+        "duration": "Duration",
+        "minutes": "min"
     },
     "demo": {
         "title": "Ping",
