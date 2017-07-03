@@ -132,6 +132,7 @@ define({
         "ip": "IP address",
         "location": "Location",
         "ping": "Ping",
+        "milliseconds": "ms",
         "tx": "Data transfer rate",
         "txUnits": "Mb/s",
         "rx": "Data receive rate",
