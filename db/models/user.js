@@ -115,8 +115,8 @@ User.methods.isActive = function() {
 };
 User.virtual('genderId').set(function(genderId) {
     var gender = {
-        "m": "Мужской",
-        "f": "Женский"
+        "m": "male",
+        "f": "female"
     };
     this.gender = gender[genderId];
 });
