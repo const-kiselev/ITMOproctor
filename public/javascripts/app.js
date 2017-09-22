@@ -1,7 +1,7 @@
 //
 // Global variables
 //
-var LANG = Cookies.get("itmoproctorLang") ? Cookies.get("itmoproctorLang") : 'en';
+var LANG = Cookies.get("itmoproctorLang") ? Cookies.get("itmoproctorLang") : 'ru';
 var SINGLE_MODE = false;
 var UPLOAD_LIMIT = 10; // MB
 var TX_MIN = 1; // Mbps
