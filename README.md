@@ -97,7 +97,7 @@ sudo apt-get install kurento-server
 
 Клонирование репозитория ITMOproctor и инициализация:
 ```
-git clone https://github.com/meefik/ITMOproctor.git
+git clone https://github.com/openeduITMO/ITMOproctor.git
 cd ./ITMOproctor
 mv config-example.json config.json
 npm install
