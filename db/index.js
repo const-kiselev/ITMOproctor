@@ -126,15 +126,26 @@ var db = {
             if (args.data.role) query.role = Number(args.data.role);
             var rows = args.data.rows ? Number(args.data.rows) : 0;
             var page = args.data.page ? Number(args.data.page) - 1 : 0;
-            // Query
+            var text = args.data.text ? args.data.text : null;
+            // Fields for text search
+            var props = ["lastname", "firstname","middlename","provider","username","email"];
+            // Query            
             var User = require('./models/user');
             User.count(query, function(err, count) {
                 if (err || !count) return callback(err);
-                User.find(query).sort('lastname firstname middlename')
-                    .skip(rows * page).limit(rows).exec(function(err, data) {
-                        callback(err, data, count);
+                User.find(query).sort('lastname firstname middlename').exec(function(err, data) {
+                        //callback(err, data, count);
+                        var users = data;
+                        var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                        // text search
+                        if (text && text != "") {
+                            users  = db.textSearch(data, text, props);
+                            endIndex = endIndex > users.length ? users.length : endIndex;
+                            callback(err, users.slice(rows*page, endIndex), users.length);
+                        }
+                        else callback(err, users.slice(rows*page, endIndex), users.length);
                     });
-            });
+            });            
         },
         get: function(args, callback) {
             var User = require('./models/user');
@@ -417,6 +428,7 @@ var db = {
             var page = args.data.page ? Number(args.data.page) - 1 : 0;
             var fromDate = args.data.from ? moment(args.data.from) : null;
             var toDate = args.data.to ? moment(args.data.to) : null;
+            var text = args.data.text ? args.data.text : null;
             var query = {};
             // Dates
             if (fromDate && toDate) {
@@ -463,12 +475,23 @@ var db = {
                 path: 'verified',
                 select: 'submit hash'
             }];
+            // Fields for text search
+            var props = ["student", "inspector","duration","subject","examId","examCode"];
             // Query
             var Exam = require('./models/exam');
             Exam.count(query, function(err, count) {
                 if (err || !count) return callback(err);
                 Exam.find(query).sort('leftDate beginDate subject').populate(opts).exec(function(err, data) {
-                    callback(err, data, count);
+                    //callback(err, data, count);
+                    var exams = data;
+                    var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                    // text search
+                    if (text && text != "") {
+                        exams  = db.textSearch(data, text, props);
+                        endIndex = endIndex > exams.length ? exams.length : endIndex;
+                        callback(err, exams.slice(rows*page, endIndex), exams.length);
+                    }
+                    else callback(err, exams.slice(rows*page, endIndex), exams.length);
                 });
             });
         },
@@ -854,6 +877,7 @@ var db = {
             var page = args.data.page ? Number(args.data.page) - 1 : 0;
             var fromDate = args.data.from ? moment(args.data.from) : null;
             var toDate = args.data.to ? moment(args.data.to) : null;
+            var text = args.data.text ? args.data.text : null;
             var query = {};
             // Dates
             if (fromDate && toDate) {
@@ -869,13 +893,23 @@ var db = {
                 path: 'inspector',
                 select: 'username firstname lastname middlename'
             }];
+            // Fields for text search
+            var props = ["inspector"];
             // Query
             var Schedule = require('./models/schedule');
             Schedule.count(query, function(err, count) {
                 if (err || !count) return callback(err);
-                Schedule.find(query).sort('beginDate').skip(rows * page)
-                    .limit(rows).populate(opts).exec(function(err, data) {
-                        callback(err, data, count);
+                Schedule.find(query).sort('beginDate').populate(opts).exec(function(err, data) {
+                        //callback(err, data, count);
+                        var schedules = data;
+                        var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                        // text search
+                        if (text && text != "") {
+                            schedules  = db.textSearch(data, text, props);
+                            endIndex = endIndex > schedules.length ? schedules.length : endIndex;
+                            callback(err, schedules.slice(rows*page, endIndex), schedules.length);
+                        }
+                        else callback(err, schedules.slice(rows*page, endIndex), schedules.length);
                     });
             });
         },
@@ -1092,6 +1126,36 @@ var db = {
                 return callback(err);
             }
         }
+    },
+    textSearch: function(data, text, props) {
+        // Text search based on props of the object
+        if (!data || !(text || "").length) return data;
+        var objectToString = function(obj,parent) {
+            var result = "";
+            for (var prop in obj) {
+                if (props.indexOf(prop) >= 0 || props.indexOf(parent) >= 0 ) {
+                    if (obj[prop] instanceof Object) {
+                        result += objectToString(obj[prop],prop);
+                    }
+                    if (typeof obj[prop] === 'string') result += obj[prop] + " ";        
+                }
+            }
+            return result;
+        };
+        var phrases = text.toLowerCase().split(' ');
+        var rows = [];
+        for (var i = 0, li = data.length; i < li; i++) {
+            var str = objectToString(JSON.parse(JSON.stringify(data[i]))).toLowerCase();
+            var cond = true;
+            for (var j = 0, lj = phrases.length; j < lj; j++) {
+                if (str.search(phrases[j]) === -1) {
+                    cond = false;
+                    break;
+                }
+            }
+            if (cond) rows.push(data[i]);
+        }
+        return rows;
     }
 };
 conn.on('error', function(err) {

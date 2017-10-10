@@ -166,19 +166,8 @@ define([
                 method: 'get',
                 queryParams: {
                     from: now.startOf('day').toJSON(),
-                    to: now.startOf('day').add(1, 'days').toJSON()
-                },
-                loadFilter: function(data) {
-                    data = data || [];
-                    var text = self.$TextSearch.textbox('getValue').trim();
-                    if (_.isEmpty(text)) return data;
-                    else {
-                        var rows = _.textSearch(data.rows, text);
-                        return {
-                            rows: rows,
-                            total: rows.length
-                        };
-                    }
+                    to: now.startOf('day').add(1, 'days').toJSON(),
+                    text: self.$TextSearch.textbox('getValue').trim()
                 }
             });
         },
@@ -275,10 +264,12 @@ define([
             return tpl(data);
         },
         doSearch: function() {
+            var self = this;
             var dates = this.getDates();
             this.$Grid.datagrid('load', {
                 from: dates.from,
-                to: dates.to
+                to: dates.to,
+                text: self.$TextSearch.textbox('getValue').trim()
             });
         },
         doExamInfo: function(e) {
