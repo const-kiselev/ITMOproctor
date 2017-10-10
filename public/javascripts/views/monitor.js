@@ -237,22 +237,11 @@ define([
                 method: 'get',
                 queryParams: {
                     from: dates.from,
-                    to: dates.to
+                    to: dates.to,
+                    text: self.$TextSearch.textbox('getValue').trim()
                 },
                 onLoadSuccess: function() {
                     self.lastUpdated = {};
-                },
-                loadFilter: function(data) {
-                    data = data || [];
-                    var text = self.$TextSearch.textbox('getValue').trim();
-                    if (_.isEmpty(text)) return data;
-                    else {
-                        var rows = _.textSearch(data.rows, text);
-                        return {
-                            rows: rows,
-                            total: rows.length
-                        };
-                    }
                 }
             });
             this.stickit(app.time);
@@ -368,6 +357,7 @@ define([
             return tpl(data);
         },
         doSearch: function() {
+            var self = this;
             var myself;
             switch (true) {
                 case this.$StatusBtn1.linkbutton('options').selected:
@@ -381,7 +371,8 @@ define([
             this.$Grid.datagrid('load', {
                 myself: myself,
                 from: dates.from,
-                to: dates.to
+                to: dates.to,
+                text: self.$TextSearch.textbox('getValue').trim()
             });
         },
         doExamInfo: function(e) {

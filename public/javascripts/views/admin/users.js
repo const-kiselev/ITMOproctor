@@ -65,7 +65,9 @@ define([
 
             this.$TextSearch = this.$(".text-search");
             this.$TextSearch.searchbox({
-                searcher: this.doSearch.bind(this)
+                searcher: function(value, name) {
+                    self.doSearch();
+                }
             });
 
             this.$Grid = this.$("#users-grid");
@@ -121,19 +123,7 @@ define([
                 rownumbers: true,
                 ctrlSelect: true,
                 url: 'admin/users',
-                method: 'get',
-                loadFilter: function(data) {
-                    data = data || [];
-                    var text = self.$TextSearch.textbox('getValue').trim();
-                    if (_.isEmpty(text)) return data;
-                    else {
-                        var rows = _.textSearch(data.rows, text);
-                        return {
-                            rows: rows,
-                            total: rows.length
-                        };
-                    }
-                }
+                method: 'get'
             });
 
             return this;
@@ -171,7 +161,10 @@ define([
             return val;
         },
         doSearch: function() {
-            this.$Grid.datagrid('reload');
+            var self = this;
+            this.$Grid.datagrid('load', {
+                text: self.$TextSearch.textbox('getValue').trim()
+            });
         },
         doUserInfo: function(e) {
             var element = e.currentTarget;
