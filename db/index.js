@@ -136,7 +136,7 @@ var db = {
                 User.find(query).sort('lastname firstname middlename').exec(function(err, data) {
                         //callback(err, data, count);
                         var users = data;
-                        var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                        var endIndex = (rows*page + rows) > data.length || (rows*page + rows) === 0 ? data.length : (rows*page + rows);
                         // text search
                         if (text && text != "") {
                             users  = db.textSearch(data, text, props);
@@ -484,7 +484,7 @@ var db = {
                 Exam.find(query).sort('leftDate beginDate subject').populate(opts).exec(function(err, data) {
                     //callback(err, data, count);
                     var exams = data;
-                    var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                    var endIndex = (rows*page + rows) > data.length || (rows*page + rows) === 0 ? data.length : (rows*page + rows);
                     // text search
                     if (text && text != "") {
                         exams  = db.textSearch(data, text, props);
@@ -902,7 +902,7 @@ var db = {
                 Schedule.find(query).sort('beginDate').populate(opts).exec(function(err, data) {
                         //callback(err, data, count);
                         var schedules = data;
-                        var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                        var endIndex = (rows*page + rows) > data.length || (rows*page + rows) === 0 ? data.length : (rows*page + rows);
                         // text search
                         if (text && text != "") {
                             schedules  = db.textSearch(data, text, props);
