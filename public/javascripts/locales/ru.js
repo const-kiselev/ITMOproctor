@@ -369,6 +369,7 @@ define({
     "admin": {
         "title": "Администрирование",
         "management": "Управление",
+        "statistics": "Статистика",
         "settings": "Настройки",
         "help": "Справка",
         "users": {
@@ -412,6 +413,20 @@ define({
             "beginDate": "Начало работы",
             "endDate": "Окончание работы",
             "concurrent": "Кол-во сессий"
+        },
+        "usersStats": {
+            "title": "Пользователи",
+            "tabTitle": "Статистика по пользователям",
+            "totalUsers": "Всего пользователей",
+            "totalStudents": "Слушателей",
+            "totalInspectors": "Прокторов"
+        },
+        "examsStats": {
+            "title": "Экзамены",
+            "tabTitle": "Статистика по экзаменам",
+            "totalExams": "Всего экзаменов",
+            "totalAccepted": "Принятых",
+            "totalIntercepted": "Прерванных"
         },
         "about": {
             "title": "О системе",

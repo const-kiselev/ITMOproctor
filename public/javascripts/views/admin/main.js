@@ -90,6 +90,17 @@ define([
                         text: i18n.t('admin.schedules.title')
                     }]
                 }, {
+                    text: i18n.t('admin.statistics'),
+                    children: [{
+                        id: 'usersStats',
+                        text: i18n.t('admin.usersStats.title'),
+                        tabText: i18n.t('admin.usersStats.tabTitle')
+                    }, {
+                        id: 'examsStats',
+                        text: i18n.t('admin.examsStats.title'),
+                        tabText: i18n.t('admin.examsStats.tabTitle')
+                    }]
+                }, {
                     text: i18n.t('admin.help'),
                     children: [{
                         id: 'about',
@@ -122,13 +133,13 @@ define([
         },
         renderTab: function(node) {
             if (!node.id) return;
-            var exist = this.$Tabs.tabs('exists', node.text);
-            if (exist) return this.$Tabs.tabs('select', node.text);
+            var exist = this.$Tabs.tabs('exists', node.tabText || node.text);
+            if (exist) return this.$Tabs.tabs('select', node.tabText || node.text);
             var tabContent = $('<div class="tab-content">' + i18n.t('loading') + '</div>');
             for (var k in node.params) tabContent.data(k, node.params[k]);
             this.$Tabs.tabs('add', {
                 id: node.id,
-                title: node.text,
+                title: node.tabText || node.text,
                 content: tabContent,
                 closable: true
             });

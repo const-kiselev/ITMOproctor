@@ -136,7 +136,7 @@ var db = {
                 User.find(query).sort('lastname firstname middlename').exec(function(err, data) {
                         //callback(err, data, count);
                         var users = data;
-                        var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                        var endIndex = (rows*page + rows) > data.length || (rows*page + rows) === 0 ? data.length : (rows*page + rows);
                         // text search
                         if (text && text != "") {
                             users  = db.textSearch(data, text, props);
@@ -484,7 +484,7 @@ var db = {
                 Exam.find(query).sort('leftDate beginDate subject').populate(opts).exec(function(err, data) {
                     //callback(err, data, count);
                     var exams = data;
-                    var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                    var endIndex = (rows*page + rows) > data.length || (rows*page + rows) === 0 ? data.length : (rows*page + rows);
                     // text search
                     if (text && text != "") {
                         exams  = db.textSearch(data, text, props);
@@ -820,6 +820,99 @@ var db = {
             }).exec(callback);
         }
     },
+    stats: {
+        usersStats: function(args, callback) {
+            var query = {};
+            // Query
+            var User = require('./models/user');
+            User.count(query, function(err, count) {
+                if (err || !count) return callback(err, 0, 0, 0);
+                User.find(query).exec(function(err, data) {
+                    var users = data;
+
+                    var totalUsers = users.length;
+                    var totalStudents = 0;
+                    var totalInspectors = 0;
+                    users.forEach(function(element, index, array) {
+                        switch (element.role) {
+                            case 1:
+                                totalStudents++;
+                                break;
+                            case 2:
+                                totalInspectors++;
+                                break;
+                        }
+                    });
+                    callback(err, totalUsers, totalStudents, totalInspectors);
+                });
+            });
+        },
+        examsStats: function(args, callback) {
+            var fromDate = args.data.from ? moment(args.data.from) : null;
+            var toDate = args.data.to ? moment(args.data.to) : null;
+            var text = args.data.text ? args.data.text : null;
+            var query = {};
+            // Dates
+            if (fromDate && toDate) {
+                query = {
+                    '$and': [{
+                        leftDate: {
+                            "$lt": toDate
+                        }
+                    }, {
+                        rightDate: {
+                            "$gt": fromDate
+                        }
+                    }, {
+                        '$or': [{
+                            beginDate: null
+                        }, {
+                            beginDate: {
+                                "$lt": toDate
+                            }
+                        }]
+                    }, {
+                        '$or': [{
+                            endDate: null
+                        }, {
+                            endDate: {
+                                "$gt": fromDate
+                            }
+                        }]
+                    }]
+                };
+            }
+            // Fields for text search
+            var props = ["subject"];
+            // Query
+            var Exam = require('./models/exam');
+            Exam.count(query, function(err, count) {
+                if (err || !count) return callback(err, 0, 0, 0);
+                Exam.find(query).exec(function(err, data) {
+                    var exams = data;
+                    // text search
+                    if (text && text != "") {
+                        exams  = db.textSearch(data, text, props);
+                    }
+                    
+                    var totalExams = exams.length;
+                    var totalAccepted = 0;
+                    var totalIntercepted = 0;
+                    exams.forEach(function(element, index, array) {
+                        switch (element.resolution) {
+                            case true:
+                                totalAccepted++;
+                                break;
+                            case false:
+                                totalIntercepted++;
+                                break;
+                        }
+                    });
+                    callback(err, totalExams, totalAccepted, totalIntercepted);
+                });
+            });
+        }
+    },
     verify: {
         get: function(args, callback) {
             var Verify = require('./models/verify');
@@ -902,7 +995,7 @@ var db = {
                 Schedule.find(query).sort('beginDate').populate(opts).exec(function(err, data) {
                         //callback(err, data, count);
                         var schedules = data;
-                        var endIndex = (rows*page + rows) > data.length ? data.length : (rows*page + rows);
+                        var endIndex = (rows*page + rows) > data.length || (rows*page + rows) === 0 ? data.length : (rows*page + rows);
                         // text search
                         if (text && text != "") {
                             schedules  = db.textSearch(data, text, props);

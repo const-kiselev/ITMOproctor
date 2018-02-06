@@ -369,6 +369,7 @@ define({
     "admin": {
         "title": "Administration",
         "management": "Management",
+        "statistics": "Statistics",
         "settings": "Settings",
         "help": "Help",
         "users": {
@@ -412,6 +413,20 @@ define({
             "beginDate": "Start date",
             "endDate": "End date",
             "concurrent": "Sessions"
+        },
+        "usersStats": {
+            "title": "Users",
+            "tabTitle": "Users stats",
+            "totalUsers": "Total users",
+            "totalStudents": "Students",
+            "totalInspectors": "Proctors"
+        },
+        "examsStats": {
+            "title": "Exams",
+            "tabTitle": "Exams stats",
+            "totalExams": "Total exams",
+            "totalAccepted": "Accepted",
+            "totalIntercepted": "Intercepted"
         },
         "about": {
             "title": "About",

@@ -38,3 +38,4 @@ public/dist/
 
 # Configuration
 /config.json
+/package-lock.json
