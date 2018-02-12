@@ -73,10 +73,11 @@ define({
             "0": "Unplanned",
             "1": "Planned",
             "2": "Waiting",
-            "3": "In process",
+            "3": "In process (without proctor)",
             "4": "Accepted",
             "5": "Intercepted",
-            "6": "Missed"
+            "6": "Missed",
+            "7": "In process"
         }
     },
     "settings": {

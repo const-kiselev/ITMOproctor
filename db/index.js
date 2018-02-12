@@ -797,6 +797,9 @@ var db = {
                 if (!exam.inspector && exam.student != args.userId) {
                     query.inspector = args.userId;
                 }
+                if (!exam.inspectorConnected && exam.inspector == args.userId) {
+                    query.inspectorConnected = true;
+                }
                 if (!query) return callback();
                 Exam.findByIdAndUpdate(args.examId, {
                     '$set': query

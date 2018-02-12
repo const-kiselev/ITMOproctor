@@ -195,6 +195,7 @@ define([
                 if (endDate <= now) status = 6;
                 if (beginDate <= now && endDate > now) status = 2;
                 if (row.startDate) status = 3;
+                if (row.inspectorConnected === true) status = 7;
                 if (row.resolution === true) status = 4;
                 if (row.resolution === false) status = 5;
             }
@@ -207,13 +208,15 @@ define([
                 case 2:
                     return '<span style="color:orange;">' + i18n.t('exam.status.2') + '</span>';
                 case 3:
-                    return '<span style="color:red;">' + i18n.t('exam.status.3') + '</span>';
+                    return '<span style="color:darkred;">' + i18n.t('exam.status.3') + '</span>';
                 case 4:
                     return '<span style="color:green;">' + i18n.t('exam.status.4') + '</span>';
                 case 5:
                     return '<span style="color:purple;">' + i18n.t('exam.status.5') + '</span>';
                 case 6:
                     return '<span style="color:gray;">' + i18n.t('exam.status.6') + '</span>';
+                case 7:
+                    return '<span style="color:red;">' + i18n.t('exam.status.7') + '</span>';
                 default:
                     return null;
             }

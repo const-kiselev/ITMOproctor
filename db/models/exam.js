@@ -30,6 +30,10 @@ var Exam = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    // Наличие проктора на экзамене: true - подключен, false или null - не подключен
+    inspectorConnected: {
+        type: Boolean
+    },
     // Идентификатор результатов идентификации
     verified: {
         type: Schema.Types.ObjectId,
