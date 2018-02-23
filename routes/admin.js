@@ -61,4 +61,48 @@ router.get('/schedules', function(req, res) {
         }
     });
 });
+// Get users stats
+router.get('/usersStats', function(req, res) {
+    var args = {
+        data: req.query
+    };
+    db.stats.usersStats(args, function(err, totalUsers, totalStudents, totalInspectors) {
+        if (!err) {
+            res.json({
+                "totalUsers": totalUsers,
+                "totalStudents": totalStudents,
+                "totalInspectors": totalInspectors
+            });
+        }
+        else {
+            res.json({
+                "totalUsers": 0,
+                "totalStudents": 0,
+                "totalInspectors": 0
+            });
+        }
+    });
+});
+// Get users stats
+router.get('/examsStats', function(req, res) {
+    var args = {
+        data: req.query
+    };
+    db.stats.examsStats(args, function(err, totalExams, totalAccepted, totalIntercepted) {
+        if (!err) {
+            res.json({
+                "totalExams": totalExams,
+                "totalAccepted": totalAccepted,
+                "totalIntercepted": totalIntercepted
+            });
+        }
+        else {
+            res.json({
+                "totalExams": 0,
+                "totalAccepted": 0,
+                "totalIntercepted": 0
+            });
+        }
+    });
+});
 module.exports = router;
