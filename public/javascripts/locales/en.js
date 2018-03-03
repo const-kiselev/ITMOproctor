@@ -347,7 +347,8 @@ define({
         "verify": {
             "success": "Student personality is confirmed",
             "fail": "Student personality was not confirmed"
-        }
+        },
+        "faceTracking" : "Face tracking"
     },
     "verify": {
         "title": "Identification",

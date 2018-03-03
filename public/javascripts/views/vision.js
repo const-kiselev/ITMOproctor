@@ -89,9 +89,10 @@ define([
                 members: new MembersView({
                     examId: this.options.examId
                 }),
-                webcam: new WebcamView({
+                webcam: new WebcamView({                    
                     examId: this.options.examId,
-                    userId: app.profile.get('_id')
+                    userId: app.profile.get('_id'),
+                    inspectorRole: true
                 }),
                 screen: new ScreenView({
                     examId: this.options.examId,
@@ -99,6 +100,7 @@ define([
                     capture: false
                 })
             };
+            this.faceTrackingFlag = this.view.webcam.violation.getFaceTracking();
             // Window events
             this.messageEventHandler = function(event) {
                 var message = event.data;
@@ -184,6 +186,9 @@ define([
                         case "passport":
                             var student = self.exam.get('student');
                             if (student) self.view.passport.doOpen(student._id);
+                            break;
+                        case "faceTracking":
+                            self.toggleFaceTracking(item);
                             break;
                         case "automute":
                             self.toggleAutomute(item);
@@ -287,6 +292,22 @@ define([
                     iconCls: 'fa fa-circle-o'
                 });
             }
+        },
+        toggleFaceTracking: function(item) {
+            this.faceTrackingFlag = !this.faceTrackingFlag;
+            if (this.faceTrackingFlag) {
+                this.$Menu.menu('setIcon', {
+                    target: item.target,
+                    iconCls: 'fa fa-dot-circle-o'
+                });
+            }
+            else {
+                this.$Menu.menu('setIcon', {
+                    target: item.target,
+                    iconCls: 'fa fa-circle-o'
+                });
+            }
+            this.view.webcam.violation.changeFaceTracking();
         },
         getExamStatus: function() {
             var self = this;

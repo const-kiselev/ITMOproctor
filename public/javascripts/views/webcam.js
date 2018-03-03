@@ -4,18 +4,22 @@
 define([
     "i18n",
     "text!templates/webcam.html",
-    "models/webcall"
-], function(i18n, template, WebcallModel) {
+    "models/webcall",
+    "views/violation"
+], function(i18n, template, WebcallModel, ViolationModule) {
     console.log('views/webcam.js');
     var View = Backbone.View.extend({
         className: "webcam-view",
         initialize: function(options) {
             this.options = options || {};
+            this.options.inspectorRole = options.inspectorRole || false;
             this.templates = _.parseTemplate(template);
             this.webcall = new WebcallModel({
                 userid: "camera-" + this.options.examId + "-" + this.options.userId,
                 constraints: this.constraints.bind(this)
             });
+            if(this.options.inspectorRole)
+                this.violation = new ViolationModule();
         },
         destroy: function() {
             if (this.webcall) this.webcall.destroy();
@@ -54,6 +58,7 @@ define([
                 input: this.videoInput,
                 output: this.videoOutput
             });
+          
             return this;
         },
         toolbar: function(model) {
@@ -132,12 +137,17 @@ define([
             this.webcall.toggleVideo(!state);
         },
         play: function(userId) {
+          var self = this;
             var peer = "camera-" + this.options.examId + "-" + userId;
             this.mute(false);
             this.webcall.call(peer);
+            if(this.violation !== undefined)
+                this.violation.runFaceTracking();
         },
         stop: function() {
             this.webcall.stop();
+            if(this.violation !== undefined)
+                this.violation.stopFaceTracking;
         }
     });
     return View;
