@@ -1252,6 +1252,22 @@ var db = {
             if (cond) rows.push(data[i]);
         }
         return rows;
+    },
+    violation: {
+        add: function(args, callback) {
+            var Violation = require('./models/violation');
+            var violation = new Violation({
+              exam: args.examId,
+              mehtod: args.method,
+              data: args.data.data,
+              time: args.data.time,
+              attach: db.storage.setId(args.data.attach)
+            });
+            violation.save(function(err, data) {
+                callback(err, data);
+                db.storage.upload(args.data.attach);
+            });
+        }
     }
 };
 conn.on('error', function(err) {

@@ -1,5 +1,39 @@
 ;(function(window, undefined){
 	window.detection = window.detection || {};
+	
+	tracking.ObjectTracker.prototype.track = function(pixels, width, height) {
+    var self = this;
+    var classifiers = this.getClassifiers();
+
+    if (!classifiers) {
+      throw new Error('Object classifier not specified, try `new tracking.ObjectTracker("face")`.');
+    }
+
+    var results = [];
+    var tmpRes;
+
+    var i = 1;
+    var typeOfArea;
+    classifiers.forEach(function(classifier) {
+      if(classifier[3]==6)
+        typeOfArea = "eye";
+      else if(classifier[3]==13)
+        typeOfArea = "mouth";
+      else if(classifier[3]==3)
+        typeOfArea = "face";
+      tmpRes = tracking.ViolaJones.detect(pixels, width, height, self.getInitialScale(), self.getScaleFactor(), self.getStepSize(), self.getEdgesDensity(), classifier);
+      tmpRes.forEach(function(tmpResData){
+        tmpResData.typeOfArea = typeOfArea;
+      });
+      results = results.concat(tmpRes);
+    });
+
+    this.emit('track', {
+      data: results
+    });
+  };
+	
+	
 
 	    // минимальный процент пересечения двух rects
 	var SQUARES_INTERSECTION_MIN_PERCENT = 50,
@@ -216,7 +250,7 @@
             var res = [], suspectedFaceArea = [];
             res.faceVerify = false;
             var areasWithIntersection = findIntersections(eyes.concat(mouths), 60, 100);
-            console.log(areasWithIntersection);
+            //console.log(areasWithIntersection);
             if(areasWithIntersection.length>2){
                 // необходима проверка, есть ли с левой или с правой части такой же объект
                 // вычисляем относительно размера найденной области с пересечением!
@@ -236,7 +270,8 @@
                             updateRects(mouths, areasWithIntersection);
                             updateRects(eyes, intersect);
                             updateRects(mouths, intersect);
-                            console.log("comparison:"+comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+                            //console.log("comparison:"+comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+														comparison(suspectedFaceArea, res.faceVerify);
                         }
                     }
                     else {
@@ -252,7 +287,8 @@
                                 updateRects(mouths, intersectionsOnFacePart);
                                 updateRects(eyes, intersect);
                                 updateRects(mouths, intersect);
-                                console.log("comparison:"+comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+                                //console.log("comparison:"+comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+																comparison(suspectedFaceArea, res.faceVerify);
                             }
                         }
                     }
@@ -263,7 +299,8 @@
             else if(areasWithIntersection.length == 2){
                 if(findMouth()) {
                     res.faceVerify = true;
-                    console.log("comparison:" + comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+                    //console.log("comparison:" + comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+										comparison(areas.concat(suspectedFaceArea), res.faceVerify);
                 }
 
             }
@@ -288,7 +325,7 @@
             if(faceVerify){
                 detection.persons.push(new Person());
                 detection.persons[0].updateArea(rects);
-                result = "New person created";
+                result = "NEW";
             }
             else{
 
@@ -309,14 +346,14 @@
                 intersects.forEach(function (intersect) {
                     person.updateArea(intersect);
                 });
-                result = "Person found";
+                result = "FOUND";
                 person.updateLastActiveTime();
             });
             if(result == ""){
                 if(faceVerify){
                     detection.persons.push(new Person());
                     detection.persons[0].updateArea(rects);
-                    result = "New person created";
+                    result = "NEW";
                 }
             }
         }
@@ -629,18 +666,18 @@
         //console.log("detection.updateFrequency = "+detection.updateFrequency);
         if(detection.persons.length <= 2 && detection.doNotRepeatAlert){
             detection.doNotRepeatAlert = false;
-            controllerRes = "There's one poerson on frame!";
+            controllerRes = "ONE";
         }
 
         if(detection.persons.length > 2 && !detection.doNotRepeatAlert) {
             detection.doNotRepeatAlert = true;
-            controllerRes = "There's more than one poerson on frame!";
+            controllerRes = "MORE";
             detection.persons = [];
         }
         detection.persons.forEach(function(person, index){
             person.updateLifeTime();
             if(person.outOfFrame() && detection.persons.length <= 2) {
-                controllerRes = "Person out of frame!";
+                controllerRes = "OUT";
                 detection.persons.splice(index, 1);
                 //console.log("Person deleted");
             }else if(person.outOfFrame() && detection.persons.length > 2){
@@ -825,7 +862,8 @@
             if(res != undefined)
                 //original[index] = res;
                 for (var key in res)
-                    origRect[key] = res[key];
+										if(origRect[key] !== undefined)
+                    		origRect[key] = res[key];
         });
         return original;
     };
@@ -880,7 +918,7 @@
             if(rect.facePart == facePart)
                 result.push(rect);
         });
-        console.log("findRectWithFacePart: ", result);
+        //console.log("findRectWithFacePart: ", result);
         return result;
     };
     var makeArrayClone = function(from, to){

@@ -15,6 +15,7 @@ var tools = require('./tools');
 var admin = require('./admin');
 var user = require('./user');
 var schedule = require('./schedule');
+var violation = require('./violation');
 module.exports = function(app) {
     app.use('/dist', dist);
     app.use('/api', api);
@@ -33,4 +34,5 @@ module.exports = function(app) {
     app.use('/exam', profile.isAdministrator, exam);
     app.use('/user', profile.isAdministrator, user);
     app.use('/schedule', profile.isAdministrator, schedule);
+    app.use('/violation', profile.isInspector, violation);
 };

@@ -19,7 +19,10 @@ define([
                 constraints: this.constraints.bind(this)
             });
             if(this.options.inspectorRole)
-                this.violation = new ViolationModule();
+                this.violation = new ViolationModule({
+                  examId: this.options.examId,
+                  userId: this.options.userId
+                });
         },
         destroy: function() {
             if (this.webcall) this.webcall.destroy();
