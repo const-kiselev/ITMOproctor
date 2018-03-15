@@ -17,6 +17,7 @@ define([
                 url: 'violation/'+this.options.examId
             });
             this.collection = new Violations();
+            this.tracker = new tracking.ObjectTracker(['eye', 'mouth', 'face']); 
         },
         changeFaceTracking : function(){
           this.faceTrackingOn = !this.faceTrackingOn;
@@ -26,12 +27,35 @@ define([
             this.runFaceTracking();
         },
         getFaceTracking: function(){return this.faceTrackingOn;},
+        startFaceTracking: function(element){
+            detection.init(element);
+        },
+        faceTracking: function(canvas){
+            var self = this;
+          tracking.track(canvas, this.tracker);
+            this.tracker.on('track', function(event) {
+                if (event.data.length !== 0) {
+                    console.log(event);
+                    //self.detectionAction(event);
+                } 
+            });
+            
+        },
+        detectionAction: function(event){
+              var detectionRes = detection.findFace(event.data);
+              console.log("detectionRes",detectionRes);
+              if(detectionRes.indexOf("OUT")>=0)
+                  self.add(0, "OUT");
+              else if (detectionRes.indexOf("MORE")>=0 && 
+                            detectionRes.indexOf("ONE")<0)
+                  self.add(0, "MORE");
+            },
         runFaceTracking: function(){
             var self = this;
             if(!this.faceTrackingOn){this.stopFaceTracking();}
             else {
                   setTimeout(function(){
-                      var myWorker = new Worker("detection.js");
+                      //var myWorker = new Worker("detection.js");
                       var tracker = new tracking.ObjectTracker(['eye', 'mouth', 'face']); 
                           this.tracker = tracker;
                           tracker.setInitialScale(1);
@@ -40,16 +64,7 @@ define([
 
                       tracking.track('.webcam-output', tracker, { camera: true });
                       detection.init('.webcam-output');
-                      var detectionRes;
-                      tracker.on('track', function(event) {
-                          detectionRes = detection.findFace(event.data);
-                          console.log("detectionRes",detectionRes);
-                          if(detectionRes.indexOf("OUT")>=0)
-                              self.add(0, "OUT");
-                          else if (detectionRes.indexOf("MORE")>=0 && 
-                                        detectionRes.indexOf("ONE")<0)
-                              self.add(0, "MORE");
-                      });
+                      tracker.on('track', function(event) {this.detectionAction(event);});
                   },5000);  
                 }
         },

@@ -41,13 +41,13 @@
         SUSPECT_OBJ_MIN_LIFE_TIME_TO_EVOLVE = 200,
         SUSPECT_OBJ_MAX_LIFE_TIME_TO_DELETE = 100;
 	detection.doNotRepeatAlert = false;
-    detection.init = function(className){
+    detection.init = function(element){
         detection.updateFrequency = 0;
         detection.numOfUpdates = 0;
         detection.startTime = Date.now();
         detection.frame = [];
-        detection.frame.width = window.document.getElementsByClassName(className).offsetHeight;
-        detection.frame.height = window.document.getElementsByClassName(className).offsetHeight;
+        detection.frame.width = element.offsetWidth;
+        detection.frame.height = element.offsetHeight;
     };
 	    // Конструктор todo: реализовать lifeTime
 	var Person = function(){

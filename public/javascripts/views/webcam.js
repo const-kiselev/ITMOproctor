@@ -144,13 +144,26 @@ define([
             var peer = "camera-" + this.options.examId + "-" + userId;
             this.mute(false);
             this.webcall.call(peer);
-            if(this.violation !== undefined)
-                this.violation.runFaceTracking();
+            if(this.violation !== undefined){ 
+              setTimeout(function(){
+                self.violation.startFaceTracking(self.webcall.webRtcPeer.currentFrame);
+                setInterval(function(){
+                  //$(".panel-screen").html($(self.webcall.webRtcPeer.currentFrame));
+                  self.violation.faceTracking(self.webcall.webRtcPeer.currentFrame);
+                }, 2000);
+                }, 7000)
+                
+                //this.violation.runFaceTracking();
+            }
         },
         stop: function() {
             this.webcall.stop();
-            if(this.violation !== undefined)
+            if(this.violation !== undefined){
+                
                 this.violation.stopFaceTracking;
+            }
+              
+                
         }
     });
     return View;
