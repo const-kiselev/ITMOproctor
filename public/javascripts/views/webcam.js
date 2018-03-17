@@ -144,26 +144,34 @@ define([
             var peer = "camera-" + this.options.examId + "-" + userId;
             this.mute(false);
             this.webcall.call(peer);
-            if(this.violation !== undefined){ 
-              setTimeout(function(){
-                self.violation.startFaceTracking(self.webcall.webRtcPeer.currentFrame);
-                setInterval(function(){
-                  //$(".panel-screen").html($(self.webcall.webRtcPeer.currentFrame));
-                  self.violation.faceTracking(self.webcall.webRtcPeer.currentFrame);
-                }, 2000);
-                }, 7000)
-                
-                //this.violation.runFaceTracking();
-            }
+            if(this.options.inspectorRole)
+                this.startFaceTracking();
         },
         stop: function() {
             this.webcall.stop();
-            if(this.violation !== undefined){
-                
-                this.violation.stopFaceTracking;
+            if(this.options.inspectorRole)
+                this.stopFaceTracking();
+        },
+        startFaceTracking: function(){
+            self = this;
+            if(this.webcall === undefined)
+                return;
+            if(self.webcall.webRtcPeer === undefined)
+                return;
+            if(this.violation !== undefined){ 
+              setTimeout(function(){
+                  if(self.webcall.webRtcPeer === undefined)
+                      return;
+                  if(self.webcall.webRtcPeer.currenFrame === undefined)
+                      return;
+                  self.violation.faceTrackingInit(self.webcall.webRtcPeer);
+                  self.violation.startTrackingViaWebRtcPeerCurrentFrame();
+              }, 7000)
             }
-              
-                
+        },
+        stopFaceTracking: function(){
+            if(this.violation !== undefined)
+                this.violation.stopFaceTracking();
         }
     });
     return View;

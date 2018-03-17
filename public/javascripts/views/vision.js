@@ -100,7 +100,7 @@ define([
                     capture: false
                 })
             };
-            this.faceTrackingFlag = this.view.webcam.violation.getFaceTracking();
+            this.faceTrackingFlag = this.view.webcam.violation.getFaceTrackingState();
             // Window events
             this.messageEventHandler = function(event) {
                 var message = event.data;
@@ -300,14 +300,17 @@ define([
                     target: item.target,
                     iconCls: 'fa fa-dot-circle-o'
                 });
+                this.view.webcam.violation.changeFaceTrackingState(true);
+                this.view.webcam.startFaceTracking();
             }
             else {
                 this.$Menu.menu('setIcon', {
                     target: item.target,
                     iconCls: 'fa fa-circle-o'
                 });
+                this.view.webcam.violation.changeFaceTrackingState(false);
+                this.view.webcam.stopFaceTracking();
             }
-            this.view.webcam.violation.changeFaceTracking();
         },
         getExamStatus: function() {
             var self = this;
