@@ -10,7 +10,7 @@ define([
         className: "violation-view",
         initialize: function(options) {
             var self = this;
-            this.faceTrackingState = true;
+            this.faceTrackingState = false;
             this.faceTrackingInited = false;
             this.options = options || {};
             // Violation collection
@@ -29,18 +29,44 @@ define([
                 delete this.worker;
             }
             this.worker = new Worker('javascripts/detection-thread.js');
+            console.log("worker set");
+            
+            $(".canvasina").css({width:$('.webcam-output').css("width"),height:$('.webcam-output').css("height"),zIndex:150000,position:"absolute",top:0,left:0})
+            var canvas = document.getElementsByClassName('canvasina')[0];
+            var context = canvas.getContext('2d');
+            // context.strokeStyle = "##FF0000";
+            // context.strokeRect(20, 40, 50, 50);
+            
             this.worker.onmessage = function(event){
-                console.log(event);
-                switch(event.data[0]){
-                  case 'detectionResult':
-                    self.detectionFilter(event.data[1]);
-                    if(self.faceTrackingState)
-                        self.track();
-                    break;
-                  case 'inited':
-                    self.faceTrackingInited = true;
-                    break;
-                }
+                
+                event.data[2].forEach(function(rect) {                    
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    var pr = false, pr2 = false;
+                  if(rect.typeOfArea=='face')
+                  {context.strokeStyle = "#68E226"; pr = true;} // green
+                  
+                  if(rect.facePart == "leftEye")
+                  {context.strokeStyle = "#0400e2";pr = true;} // yellow
+                  else if(rect.facePart == "rightEye")
+                  {context.strokeStyle = "#ff00de"; pr = true;} // yellow
+                  else if(rect.facePart == "mouth")
+                  {context.strokeStyle = "#DAFF00";pr = true;}
+                    context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+                });
+                
+                
+                setTimeout( function(){
+                    switch(event.data[0]){
+                      case 'detectionResult':
+                        self.detectionFilter(event.data[1]);
+                        if(self.faceTrackingState)
+                            self.track();
+                        break;
+                      case 'inited':
+                        self.faceTrackingInited = true;
+                        break;
+                    }
+                }, 1000);
             };
           var ev;
             this.worker.postMessage(['initTrackingAndDetection', 
@@ -91,10 +117,9 @@ define([
         detectionFilter: function(data){
           console.log("violation.detectionRes",data);
           if(data.indexOf("OUT")>=0)
-              self.add(0, "OUT");
-          else if (data.indexOf("MORE")>=0 && 
-                        detectionRes.indexOf("ONE")<0)
-              self.add(0, "MORE");
+              this.add(0, "OUT");
+          else if (data.indexOf("MORE")>=0 && data.indexOf("ONE")<0)
+              this.add(0, "MORE");
         },
         add: function(method, data){
             if(!this.faceTrackingOn) return;

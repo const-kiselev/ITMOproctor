@@ -228,6 +228,12 @@ define([], function() {
                     };
                     self.webRtcPeer = this;
                     self.sendMessage(message);
+                    // setTimeout(function(){
+                    //     console.log("123456789------------------------");
+                    //     var c = self.currentFrame;
+                    //     console.log(c);
+                    //     $("#qwerty").append(c);
+                    // },7000);
                 }
             }
 
@@ -300,6 +306,8 @@ define([], function() {
                 this.video = !this.video;
             }
             if (this.webRtcPeer) {
+                console.log(this.webRtcPeer.currentFrame);
+                $(".panel-screen").html($(this.webRtcPeer.currentFrame));
                 var videoTracks = this.webRtcPeer.peerConnection.getLocalStreams()[0].getVideoTracks();
                 videoTracks[0].enabled = this.video;
             }

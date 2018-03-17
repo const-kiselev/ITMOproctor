@@ -158,15 +158,15 @@ define([
                 return;
             if(self.webcall.webRtcPeer === undefined)
                 return;
-            if(this.violation !== undefined){ 
+            if(this.violation !== undefined){
               setTimeout(function(){
                   if(self.webcall.webRtcPeer === undefined)
                       return;
-                  if(self.webcall.webRtcPeer.currenFrame === undefined)
+                  if(self.webcall.webRtcPeer.currentFrame === undefined)
                       return;
                   self.violation.faceTrackingInit(self.webcall.webRtcPeer);
                   self.violation.startTrackingViaWebRtcPeerCurrentFrame();
-              }, 7000)
+              }, 7000);
             }
         },
         stopFaceTracking: function(){

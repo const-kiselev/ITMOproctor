@@ -101,7 +101,10 @@ define([
             this.listenTo(this.collection, 'add', this.appendItem);
             // Socket notification
             app.io.notify.on('notes-' + this.options.examId, function(data) {
+                console.log("note notified");
+                console.log(data);
                 if (!app.isMe(data.userId)) {
+                    console.log(data);
                     self.collection.fetch();
                 }
             });

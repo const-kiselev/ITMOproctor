@@ -25,6 +25,7 @@ router.post('/:examId', function(req, res) {
     db.notes.add(args, function(err, data) {
         if (!err && data) {
             res.json(data);
+            console.log("note-note added");
             req.notify('notes-' + args.examId, {
                 userId: args.userId
             });

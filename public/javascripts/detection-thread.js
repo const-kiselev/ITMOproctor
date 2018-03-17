@@ -1,4 +1,5 @@
 var _global = {};
+var window = {};
 var tracking = {};
 var detection = {};
  _global.tracking = tracking;
@@ -55,7 +56,8 @@ onmessage = function(event){
 				var trackingRes = _global.tracker.track(event.data[1], event.data[2], event.data[3]);
 				if(trackingRes !== undefined){
 					var detectionRes = detection.findFace(trackingRes);
-					postMessage(['detectionResult', detectionRes]);
+					console.log(detectionRes);
+					postMessage(['detectionResult', detectionRes, trackingRes]);
 					break;
 				}
 					postMessage(['empty']);

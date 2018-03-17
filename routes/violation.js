@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../db');
+var logger = require('../common/logger');
 
 // Create new violation
 router.post('/:examId', function(req, res) {
@@ -19,6 +20,7 @@ router.post('/:examId', function(req, res) {
             editable: false
         }
     };
+    logger.debug("violation.js --------------------------------------------------------------------");
     console.log(args.data);
     db.violation.add(args, function(err, data) {
         if (!err && data) {
@@ -35,7 +37,7 @@ router.post('/:examId', function(req, res) {
     
     db.notes.add(argsForNote, function(err, data) {
         if (!err && data) {
-            
+            console.log("note-violation added");
             req.notify('notes-' + args.examId, {
                 userId: args.userId
             });
