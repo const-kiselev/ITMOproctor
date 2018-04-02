@@ -348,7 +348,11 @@ define({
             "success": "Student personality is confirmed",
             "fail": "Student personality was not confirmed"
         },
-        "faceTracking" : "Face tracking"
+        "faceTracking" : "Face tracking",
+        "faceTrackingAnswer": { 
+          "OUT": "User is out of the frame",
+          "MORE": "There're more than one person on the frame"
+        }
     },
     "verify": {
         "title": "Identification",

@@ -99,14 +99,14 @@ define([
             });
             this.collection = new Notes();
             this.listenTo(this.collection, 'add', this.appendItem);
+            this.audio = new Audio("sounds/alert.ogg");
             // Socket notification
             app.io.notify.on('notes-' + this.options.examId, function(data) {
-                console.log("note notified");
-                console.log(data);
-                if (!app.isMe(data.userId)) {
-                    console.log(data);
-                    self.collection.fetch();
-                }
+                self.collection.fetch({
+                        success: function() {
+                            self.audio.play();
+                        }
+                    });
             });
         },
         render: function() {
