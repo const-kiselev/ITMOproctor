@@ -37,9 +37,9 @@
 
 	    // минимальный процент пересечения двух rects
 	var SQUARES_INTERSECTION_MIN_PERCENT = 50,
-        PERSON_TIMEOUT = 1,
-        SUSPECT_OBJ_MIN_LIFE_TIME_TO_EVOLVE = 200,
-        SUSPECT_OBJ_MAX_LIFE_TIME_TO_DELETE = 100;
+        PERSON_TIMEOUT = 1000,
+        SUSPECT_OBJ_MIN_LIFE_TIME_TO_EVOLVE = 5000,
+        SUSPECT_OBJ_MAX_LIFE_TIME_TO_DELETE = 4000;
 	detection.doNotRepeatAlert = false;
     detection.init = function(element){
         detection.updateFrequency = 0;
@@ -145,9 +145,10 @@
     Person.prototype.getY = function(){return this._y;};
     Person.prototype.getNearEdge = function(){return this._nearEdge;};
     Person.prototype.outOfFrame = function(){
-        if(this.getTimeout() > PERSON_TIMEOUT*10*detection.updateFrequency && !this._nearEdge)
+			console.log(this.getTimeout());
+        if(this.getTimeout() > PERSON_TIMEOUT*10 && !this._nearEdge)
             return true;
-        else if(this.getTimeout() > PERSON_TIMEOUT*detection.updateFrequency && this._nearEdge)
+        else if(this.getTimeout() > PERSON_TIMEOUT && this._nearEdge)
             return true;
         return false;
     };
