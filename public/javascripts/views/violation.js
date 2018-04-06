@@ -122,8 +122,10 @@ define([
           console.log("violation.detectionRes",data);
           if(data.indexOf("OUT")>=0)
               this.add(0, "OUT");
-          else if (data.indexOf("MORE")>=0 && data.indexOf("ONE")<0)
-              this.add(0, "MORE");
+//           else if (data.indexOf("FOUND")>=0 && data.indexOf("ONE")<0)
+//               this.add(0, "MORE");
+          else if(data.filter(i => i === "FOUND").length>=2)
+            this.add(0, "MORE");
         },
         add: function(method, data){
             if(!this.faceTrackingState) return;

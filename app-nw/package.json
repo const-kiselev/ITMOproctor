@@ -18,12 +18,12 @@
       "url": "http://opensource.org/licenses/GPL-3.0"
   }],
   "main": "index.html",
-  "homepage": "https://proctor.ifmo.ru",
+  "homepage": "https://proctor-kostyakiselev499299.codeanyapp.com/",
   "window": {
     "title": "ITMOproctor",
     "icon": "icon.png",
     "frame": true,
-    "toolbar": false,
+    "toolbar": true,
     "width": 1000,
     "height": 700
   },

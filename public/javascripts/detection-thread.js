@@ -46,9 +46,9 @@ onmessage = function(event){
 		switch(cmd){
 			case 'initTrackingAndDetection':
 				_global.tracker = new tracking.ObjectTracker(['eye', 'mouth', 'face']);
-				_global.tracker.setInitialScale(1);
-				_global.tracker.setStepSize(1.7);
-				_global.tracker.setEdgesDensity(0.199);
+// 				_global.tracker.setInitialScale(1);
+// 				_global.tracker.setStepSize(1.7);
+// 				_global.tracker.setEdgesDensity(0.199);
 				detection.init(event.data[1], event.data[2]);
 				postMessage(['inited']);
 				break;
@@ -57,6 +57,7 @@ onmessage = function(event){
 				if(trackingRes !== undefined){
 					var detectionRes = detection.findFace(trackingRes);
 					console.log(detectionRes);
+					console.log(trackingRes);
 					postMessage(['detectionResult', detectionRes, trackingRes]);
 					break;
 				}

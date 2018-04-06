@@ -1,45 +1,45 @@
 ;(function(window, undefined){
 	window.detection = window.detection || {};
-	
+
 	tracking.ObjectTracker.prototype.track = function(pixels, width, height) {
-    var self = this;
-    var classifiers = this.getClassifiers();
+        var self = this;
+        var classifiers = this.getClassifiers();
 
-    if (!classifiers) {
-      throw new Error('Object classifier not specified, try `new tracking.ObjectTracker("face")`.');
-    }
+        if (!classifiers) {
+          throw new Error('Object classifier not specified, try `new tracking.ObjectTracker("face")`.');
+        }
 
-    var results = [];
-    var tmpRes;
+        var results = [];
+        var tmpRes;
 
-    var i = 1;
-    var typeOfArea;
-    classifiers.forEach(function(classifier) {
-      if(classifier[3]==6)
-        typeOfArea = "eye";
-      else if(classifier[3]==13)
-        typeOfArea = "mouth";
-      else if(classifier[3]==3)
-        typeOfArea = "face";
-      tmpRes = tracking.ViolaJones.detect(pixels, width, height, self.getInitialScale(), self.getScaleFactor(), self.getStepSize(), self.getEdgesDensity(), classifier);
-      tmpRes.forEach(function(tmpResData){
-        tmpResData.typeOfArea = typeOfArea;
-      });
-      results = results.concat(tmpRes);
-    });
+        var i = 1;
+        var typeOfArea;
+        classifiers.forEach(function(classifier) {
+              if(classifier[3]==6)
+                typeOfArea = "eye";
+              else if(classifier[3]==13)
+                typeOfArea = "mouth";
+              else if(classifier[3]==3)
+                typeOfArea = "face";
+              tmpRes = tracking.ViolaJones.detect(pixels, width, height, self.getInitialScale(), self.getScaleFactor(), self.getStepSize(), self.getEdgesDensity(), classifier);
+              tmpRes.forEach(function(tmpResData){
+                tmpResData.typeOfArea = typeOfArea;
+              });
+              results = results.concat(tmpRes);
+        });
 
-    this.emit('track', {
-      data: results
-    });
+        this.emit('track', {
+          data: results
+        });
   };
-	
-	
+
+
 
 	    // минимальный процент пересечения двух rects
-	var SQUARES_INTERSECTION_MIN_PERCENT = 50,
-        PERSON_TIMEOUT = 1000,
-        SUSPECT_OBJ_MIN_LIFE_TIME_TO_EVOLVE = 5000,
-        SUSPECT_OBJ_MAX_LIFE_TIME_TO_DELETE = 4000;
+	var SQUARES_INTERSECTION_MIN_PERCENT = 30,
+        PERSON_TIMEOUT = 1,
+        SUSPECT_OBJ_MIN_LIFE_TIME_TO_EVOLVE = 200,
+        SUSPECT_OBJ_MAX_LIFE_TIME_TO_DELETE = 100;
 	detection.doNotRepeatAlert = false;
     detection.init = function(element){
         detection.updateFrequency = 0;
@@ -134,10 +134,9 @@
         return 1;
     }
     Person.prototype.updateLifeTime = function(){
-        detection.numOfUpdates++;
-        if(detection.numOfUpdates < 26)
-            detection.updateFrequency = (Date.now() - detection.startTime)/detection.numOfUpdates;
+        //console.log(this.getTimeout());
         this.lifeTime = Date.now() - this.timeCreated;
+			console.log("detection.updateFrequency", detection.updateFrequency);
     }
     Person.prototype.getWidth = function(){return this._width};
     Person.prototype.getHeight = function(){return this._height};
@@ -145,10 +144,10 @@
     Person.prototype.getY = function(){return this._y;};
     Person.prototype.getNearEdge = function(){return this._nearEdge;};
     Person.prototype.outOfFrame = function(){
-			console.log(this.getTimeout());
-        if(this.getTimeout() > PERSON_TIMEOUT*10 && !this._nearEdge)
+        //console.log(this.getTimeout());
+        if(this.getTimeout() > PERSON_TIMEOUT*detection.updateFrequency && !this._nearEdge)
             return true;
-        else if(this.getTimeout() > PERSON_TIMEOUT && this._nearEdge)
+        else if(this.getTimeout() > PERSON_TIMEOUT*detection.updateFrequency && this._nearEdge)
             return true;
         return false;
     };
@@ -271,8 +270,8 @@
                             updateRects(mouths, areasWithIntersection);
                             updateRects(eyes, intersect);
                             updateRects(mouths, intersect);
-                            //console.log("comparison:"+comparison(areas.concat(suspectedFaceArea), res.faceVerify));
-														comparison(suspectedFaceArea, res.faceVerify);
+                            console.log("comparison:"+comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+														//comparison(suspectedFaceArea, res.faceVerify);
                         }
                     }
                     else {
@@ -288,8 +287,8 @@
                                 updateRects(mouths, intersectionsOnFacePart);
                                 updateRects(eyes, intersect);
                                 updateRects(mouths, intersect);
-                                //console.log("comparison:"+comparison(areas.concat(suspectedFaceArea), res.faceVerify));
-																comparison(suspectedFaceArea, res.faceVerify);
+                                console.log("comparison:"+comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+																//comparison(suspectedFaceArea, res.faceVerify);
                             }
                         }
                     }
@@ -300,8 +299,8 @@
             else if(areasWithIntersection.length == 2){
                 if(findMouth()) {
                     res.faceVerify = true;
-                    //console.log("comparison:" + comparison(areas.concat(suspectedFaceArea), res.faceVerify));
-										comparison(areas.concat(suspectedFaceArea), res.faceVerify);
+                    console.log("comparison:" + comparison(areas.concat(suspectedFaceArea), res.faceVerify));
+										//comparison(areas.concat(suspectedFaceArea), res.faceVerify);
                 }
 
             }
@@ -322,6 +321,9 @@
      */
     var comparison = function(rects, faceVerify) {
         var result = "";
+				detection.numOfUpdates++;
+        if(detection.numOfUpdates < 10)
+            detection.updateFrequency = (Date.now() - detection.startTime)/detection.numOfUpdates;
         if(!detection.persons.length){
             if(faceVerify){
                 detection.persons.push(new Person());
@@ -350,7 +352,7 @@
                 result = "FOUND";
                 person.updateLastActiveTime();
             });
-            if(result == ""){
+            if(result === ""){
                 if(faceVerify){
                     detection.persons.push(new Person());
                     detection.persons[0].updateArea(rects);
@@ -412,18 +414,18 @@
             // области на факт существования общей площади (пересечения)
 		for(var i=0; i<n; i=i+2)
 		{
-				// точки пересечения. Хранится индекс точки, 
+				// точки пересечения. Хранится индекс точки,
 				// чтобы было удобно потом сравнивать по Oy!
-			var xIntersections = []; 
+			var xIntersections = [];
 			for(var j=0; j<xProjectionsArray.length; j++)
 				if(j!=i && j!=i+1)
 						// проверка на принадлежность отрезку [i, i+1]
 					if(xProjectionsArray[j]>=xProjectionsArray[i] &&
                         xProjectionsArray[j]<=xProjectionsArray[i+1])
-							// добавление точки, которая принадлежит отрезку в 
+							// добавление точки, которая принадлежит отрезку в
 							// соответсвующий массив
 						xIntersections.push(j);
-				// проходимся по всем элементам, которые имеют пересечение по 
+				// проходимся по всем элементам, которые имеют пересечение по
 				// Ox, для проверки, не пересекаются ли они по Oy
 				// Если условия выполняются, то номер точки заночится в массив пересечений.
             intersections = [];
@@ -431,8 +433,8 @@
 				if(yProjectionsArray[xIntersections[j]]>= yProjectionsArray[i] &&
                     yProjectionsArray[xIntersections[j]]<=yProjectionsArray[i+1])
 					intersections.push(xIntersections[j]);
-				// проверка на повторяющиеся элементы 
-				// тк в массив были добавлены точки, которые относятся к Oy. 
+				// проверка на повторяющиеся элементы
+				// тк в массив были добавлены точки, которые относятся к Oy.
 				// Но если есть хотя бы одна точка в массиве, то rects пересекаются!
 
             intersections = unique(intersections);
